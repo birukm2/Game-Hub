@@ -1,6 +1,6 @@
 // index.js - Main JavaScript with game data
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // Check login status and update UI
     function checkAuthStatus() {
         const user = localStorage.getItem('user');
@@ -69,39 +69,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Update play button click handler
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('play-btn')) {
-            const gameId = parseInt(e.target.dataset.gameId);
-            const game = games.find(g => g.id === gameId);
-            
-            if (game) {
-                // Check if user is logged in
-                if (!localStorage.getItem('user')) {
-                    // Not logged in - store game and redirect to login
-                    localStorage.setItem('pendingGame', JSON.stringify(game));
-                    
-                    const loginFirst = confirm('Please login to play games!\n\nOK = Go to login page\nCancel = Stay here');
-                    if (loginFirst) {
-                        window.location.href = 'login.html';
-                    }
-                } else {
-                    // Logged in - play the game
-                    window.open(game.url, '_blank');
-                    
-                    // Record game play in history
-                    const user = JSON.parse(localStorage.getItem('user'));
-                    const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-                    gameHistory.unshift({
-                        gameId: game.id,
-                        gameTitle: game.title,
-                        playedAt: new Date().toISOString(),
-                        userId: user.id || user.email
-                    });
-                    localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 10)));
-                }
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('play-btn')) {
+        const gameId = parseInt(e.target.dataset.gameId);
+        const game = games.find(g => g.id === gameId);
+        
+        if (game) {
+            // Check if user is logged in
+            if (!localStorage.getItem('user')) {
+                // Not logged in - SHOW POPUP
+                showLoginPopup(game);
+            } else {
+                // Logged in - play the game
+                window.open(game.url, '_blank');
+                
+                // Record game play in history
+                const user = JSON.parse(localStorage.getItem('user'));
+                const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+                gameHistory.unshift({
+                    gameId: game.id,
+                    gameTitle: game.title,
+                    playedAt: new Date().toISOString(),
+                    userId: user.id || user.email
+                });
+                localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 10)));
             }
         }
-    });
+    }
+});
      
     setTimeout(() => {
         if (typeof netlifyIdentity === 'undefined') {

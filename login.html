@@ -6,39 +6,9 @@
     <link rel="icon" type="image/x-icon" href="assets/images/G.jpg">
     <title>Login - GameHub</title>
     <link rel="stylesheet" href="login.css">
-    
-    <!-- Netlify Identity loaded silently in background -->
-    <script>
-        // Load Netlify Identity but prevent it from showing its own UI
-        (function() {
-            var script = document.createElement('script');
-            script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-            script.onload = function() {
-                if (window.netlifyIdentity) {
-                    // Initialize silently - no auto-redirects
-                    window.netlifyIdentity.on("init", function(user) {
-                        console.log('Netlify Identity ready (background)');
-                    });
-                    
-                    window.netlifyIdentity.on("login", function(user) {
-                        console.log('User logged in via Netlify:', user.email);
-                        // Store the token for future API calls
-                        if (user.token && user.token.access_token) {
-                            localStorage.setItem('nf_token', user.token.access_token);
-                        }
-                        // Redirect to home
-                        window.location.href = 'index.html';
-                    });
-                    
-                    window.netlifyIdentity.init();
-                }
-            };
-            document.head.appendChild(script);
-        })();
-    </script>
 </head>
 <body>
-    <!-- Optional: Add GameHub header like your main page -->
+    <!-- GameHub Header -->
     <div class="gamehub-header">
         <a href="index.html" class="back-home">
             <span class="logo-square">G</span>
@@ -95,7 +65,6 @@
                 </div>
             </form>
 
-        
         </div>
     </div>
 
