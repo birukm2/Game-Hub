@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - GameHub</title>
+    <link rel="stylesheet" href="/index.css">
+    <style>
+        .login-fallback {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: rgba(30, 30, 35, 0.95);
+            border-radius: 15px;
+            text-align: center;
+        }
+        .login-fallback h2 {
+            color: #ff4757;
+            margin-bottom: 20px;
+        }
+        .login-fallback input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+        }
+        .login-fallback button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-fallback">
+        <h2>Login to GameHub</h2>
+        <p style="color: #ff6b6b; margin-bottom: 20px;">
+            Netlify Identity is not configured. Using demo login.
+        </p>
+        <input type="email" id="email" placeholder="Email" value="demo@gamehub.com">
+        <input type="password" id="password" placeholder="Password" value="demo123">
+        <button onclick="loginDemo()">Login as Demo User</button>
+        <p style="margin-top: 20px; color: #aaa; font-size: 14px;">
+            For full authentication, enable Netlify Identity in your site settings.
+        </p>
+    </div>
+    
+    <script>
+        function loginDemo() {
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userData', JSON.stringify({
+                email: 'demo@gamehub.com',
+                name: 'Demo Player'
+            }));
+            window.location.href = '/';
+        }
+        
+        // Auto-login after 3 seconds
+        setTimeout(() => {
+            if (!localStorage.getItem('userLoggedIn')) {
+                loginDemo();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
