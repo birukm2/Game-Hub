@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="assets/image/G.jpg">
+    <title>Login - GameHub</title>
+    <link rel="stylesheet" href="login.css">
+
+</head>
+<body>
+    <!-- Optional: Add GameHub header like your main page -->
+    <div class="gamehub-header">
+        <a href="index.html" class="back-home">
+            <span class="logo-square">G</span>
+            <span class="logo-text">GameHub</span>
+        </a>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome Back!</h1>
+                <p class="login-subtitle">Sign in to continue your gaming journey</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Enter your username or email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password">
+                    <div class="password-toggle">
+                        <input type="checkbox" id="showPassword">
+                        <label for="showPassword">Show Password</label>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-icon">→</span>
+                </button>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="signup-section">
+                    <p>Don't have an account?</p>
+                    <button type="button" class="signup-btn" id="signupBtn">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="demo-credentials">
+                <p>Demo: Use "player1" / "password123"</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

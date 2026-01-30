@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="assets/image/G.jpg">
+    <title>GameHub - Play. Discover. Conquer.</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- Netlify Identity for authentication -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo-link">
+                <div class="logo">
+                    <div class="logo-square">G</div>
+                    <span class="logo-text">GameHub</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="header-search">
+            <input type="text" id="search-input" class="search-input" placeholder="Search games...">
+        </div>
+        
+        <div class="header-right">
+            <nav class="header-nav">
+                <a href="#featured" class="nav-icon">FEATURED</a>
+                <a href="#all-games" class="nav-icon">ALL GAMES</a>
+                <div class="nav-icon" id="theme-toggle">🌙</div>
+                <div class="nav-icon" id="user-auth">Log in</div>
+            </nav>
+        </div>
+
+    </header>
+
+    <!-- Login Popup (will be shown when trying to play games) -->
+    <div id="loginPopup" class="login-popup-overlay">
+        <div class="login-popup">
+            <h3>🔒 Login Required</h3>
+            <p id="popup-message">You need to log in to play this game.</p>
+            <div class="popup-buttons">
+                <button class="login-btn" id="popup-login-btn">Log In</button>
+                <button class="signup-btn" id="popup-signup-btn">Sign Up</button>
+                <button class="cancel-btn" id="popup-cancel-btn">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-headline">
+                <span class="headline-white">Play. Discover.</span>
+                <span class="headline-red">Conquer.</span>
+            </h1>
+            <p class="hero-subheadline">
+                The ultimate gaming platform. Find your next adventure from thousands of games.
+            </p>
+        </section>
+
+        <!-- Featured Games Section -->
+        <section class="games-section" id="featured">
+            <h2 class="section-title">🎮 Featured Games</h2>
+            <div id="games-grid" class="games-grid">
+                <!-- Games will be loaded dynamically from JavaScript -->
+            </div>
+        </section>
+
+        <!-- All Games Section -->
+        <section class="games-section" id="all-games">
+            <h2 class="section-title">🕹️ All Games</h2>
+            <div class="category-filters">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="puzzle">Puzzle</button>
+                <button class="filter-btn" data-category="strategy">Strategy</button>
+                <button class="filter-btn" data-category="action">Action</button>
+                <button class="filter-btn" data-category="arcade">Arcade</button>
+                <button class="filter-btn" data-category="multiplayer">Multiplayer</button>
+            </div>
+            <div id="all-games-grid" class="games-grid">
+                <!-- All games will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>GameHub &copy; 2024 | Play thousands of free games online</p>
+        <div class="footer-links">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Service</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="netlify-auth.js"></script>
+    <script src="auth.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
