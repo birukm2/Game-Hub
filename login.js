@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // // Auto-fill demo credentials for easy testing
-    // setTimeout(() => {
-    //     document.getElementById('username').value = 'demo';
-    //     document.getElementById('password').value = 'demo123';
-    // }, 100);
+    // Auto-fill demo credentials for easy testing
+    setTimeout(() => {
+        document.getElementById('username').value = 'demo';
+        document.getElementById('password').value = 'demo123';
+    }, 100);
     
     // Show/hide password
     if (showPasswordToggle && passwordInput) {
@@ -43,15 +43,15 @@ document.addEventListener('DOMContentLoaded', function() {
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<span class="btn-text">Logging in...</span>';
         
-        // // Create user data (accepts any credentials for demo)
-        // const userData = {
-        //     id: Date.now(),
-        //     username: username,
-        //     name: username,
-        //     email: username.includes('@') ? username : username + '@gamehub.com',
-        //     source: 'local',
-        //     joined: new Date().toISOString()
-        // };
+        // Create user data (accepts any credentials for demo)
+        const userData = {
+            id: Date.now(),
+            username: username,
+            name: username,
+            email: username.includes('@') ? username : username + '@gamehub.com',
+            source: 'local',
+            joined: new Date().toISOString()
+        };
         
         // Store user in localStorage
         localStorage.setItem('user', JSON.stringify(userData));

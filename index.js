@@ -1,248 +1,129 @@
 // index.js - Main JavaScript with game data
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Check login status and update UI
-    function checkAuthStatus() {
-        const user = localStorage.getItem('user');
-        const authBtn = document.getElementById('user-auth') || document.getElementById('log-in');
-        
-        if (!authBtn) return;
-        
-        if (user) {
-            try {
-                const userData = JSON.parse(user);
-                const username = userData.name || userData.username || 'User';
-                const source = userData.source === 'netlify' ? '🔐' : '🎮';
-                
-                authBtn.innerHTML = `${source} ${username}`;
-                authBtn.style.color = '#4CAF50';
-                authBtn.title = 'Click to logout';
-                
-                // Update click handler for logout
-                authBtn.onclick = function() {
-                    const confirmLogout = confirm(`Logout ${username}?`);
-                    if (confirmLogout) {
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('nf_token');
-                        window.location.reload();
-                    }
-                };
-            } catch (e) {
-                console.error('Error parsing user data:', e);
-            }
-        } else {
-            authBtn.innerHTML = 'Log in';
-            authBtn.style.color = '';
-            authBtn.title = '';
-            
-            // Update click handler for login
-            authBtn.onclick = function() {
-                window.location.href = 'login.html';
-            };
-        }
-    }
-    
-    // Check auth on page load
-    checkAuthStatus();
-    
-    // Update play button behavior to check login
-    function createGameCard(game) {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        
-        card.innerHTML = `
-            <div class="game-image-wrapper">
-                <img src="${game.image}" alt="${game.title}" class="game-image">
-                <div class="game-overlay">
-                    <button class="play-btn" data-game-id="${game.id}">Play Now</button>
-                </div>
-            </div>
-            <div class="game-info">
-                <h3 class="game-title">${game.title}</h3>
-                <span class="game-category">${game.category.toUpperCase()}</span>
-                <p class="game-description">${game.description}</p>
-                <div class="game-rating">⭐ ${game.rating}/5</div>
-            </div>
-        `;
-        
-        return card;
-    }
-    
-    // Update play button click handler
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('play-btn')) {
-        const gameId = parseInt(e.target.dataset.gameId);
-        const game = games.find(g => g.id === gameId);
-        
-        if (game) {
-            // Check if user is logged in
-            if (!localStorage.getItem('user')) {
-                // Not logged in - SHOW POPUP
-                showLoginPopup(game);
-            } else {
-                // Logged in - play the game
-                window.open(game.url, '_blank');
-                
-                // Record game play in history
-                const user = JSON.parse(localStorage.getItem('user'));
-                const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-                gameHistory.unshift({
-                    gameId: game.id,
-                    gameTitle: game.title,
-                    playedAt: new Date().toISOString(),
-                    userId: user.id || user.email
-                });
-                localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 10)));
-            }
-        }
-    }
-});
-     
-    setTimeout(() => {
-        if (typeof netlifyIdentity === 'undefined') {
-            console.warn('Netlify Identity not loaded. Using fallback auth.');
-            
-            // Update login button behavior
-            const authBtn = document.getElementById('user-auth');
-            if (authBtn) {
-                authBtn.onclick = () => {
-                    if (localStorage.getItem('userLoggedIn') === 'true') {
-                        if (confirm('Logout from demo account?')) {
-                            localStorage.removeItem('userLoggedIn');
-                            localStorage.removeItem('userData');
-                            location.reload();
-                        }
-                    } else {
-                        window.location.href = '/login-fallback.html';
-                    }
-                };
-            }
-        }
-    }, 2000);
     // ===== GAME DATABASE =====
+    const games = [
+        {
+            id: 1,
+            title: "Chess",
+            category: "strategy",
+            description: "Instant chess vs computer - just move pieces!",
+            image: "assets/games/chess.jpg",
+            url: "https://www.chess.com/play/computer", 
+            featured: true,
+            rating: 4.8
+        },
+        {
+            id: 2,
+            title: "2048",
+            category: "puzzle",
+            description: "Slide tiles with arrow keys - game starts immediately!",
+            image: "assets/games/2048.jpg",
+            url: "https://play2048.co/", 
+            featured: true,
+            rating: 4.5
+        },
+        {
+            id: 3,
+            title: "Tic Tac Toe",
+            category: "strategy", 
+            description: "Click squares to play vs AI - no setup needed!",
+            image: "assets/games/tictactoe.jpg",
+            url: "https://playtictactoe.org/", 
+            featured: true,
+            rating: 4.0
+        },
+        {
+            id: 4,
+            title: "Snake",
+            category: "arcade",
+            description: "Press space to start - arrow keys to move!",
+            image: "assets/games/snake.jpg",
+            url: "https://playsnake.org/", 
+            featured: false,
+            rating: 4.3
+        },
+        {
+            id: 5,
+            title: "Checkers",
+            category: "strategy",
+            description: "Click pieces to move - play against AI!",
+            image: "assets/games/checkers.jpg",
+            url: "https://cardgames.io/checkers/", 
+            featured: false,
+            rating: 4.2
+        },
+        {
+            id: 6,
+            title: "Solitaire",
+            category: "puzzle",
+            description: "Click and drag cards - game starts immediately!",
+            image: "assets/games/solitaire.jpg",
+            url: "https://cardgames.io/solitaire/", 
+            featured: false,
+            rating: 4.6
+        },
+        {
+            id: 7,
+            title: "Wordle",
+            category: "puzzle",
+            description: "Start typing to guess the word!",
+            image: "assets/games/wordle.jpg",
+            url: "https://www.nytimes.com/games/wordle/index.html", 
+            featured: false,
+            rating: 4.7
+        },
+        {
+            id: 8,
+            title: "Minesweeper",
+            category: "puzzle",
+            description: "Click squares to start finding mines!",
+            image: "assets/games/minesweeper.jpg",
+            url: "https://minesweeper.online/", 
+            featured: false,
+            rating: 4.1
+        },
+        {
+            id: 9,
+            title: "Tetris",
+            category: "arcade",
+            description: "Blocks fall immediately - use arrow keys!",
+            image: "assets/games/tetris.jpg",
+            url: "https://tetris.com/play-tetris", 
+            featured: false,
+            rating: 4.9
+        },
+        {
+            id: 10,
+            title: "Pac-Man",
+            category: "arcade",
+            description: "Press any key to start eating dots!",
+            image: "assets/games/pacman.jpg",
+            url: "https://www.google.com/logos/2010/pacman10-i.html", 
+            featured: true,
+            rating: 4.8
+        },
+        {
+            id: 11,
+            title: "Sudoku",
+            category: "puzzle",
+            description: "Click cells and type numbers - play immediately!",
+            image: "assets/games/sudoku.jpg",
+            url: "https://sudoku.com/", 
+            featured: false,
+            rating: 4.4
+        },
+        {
+            id: 12,
+            title: "Crossword",
+            category: "puzzle",
+            description: "Click clues and type answers - starts immediately!",
+            image: "assets/games/crossword.jpg",
+            url: "https://www.nytimes.com/crosswords/game/daily", 
+            featured: false,
+            rating: 4.3
+        }
+    ];
 
-   const games = [
-    {
-        id: 1,
-        title: "Chess",
-        category: "strategy",
-        description: "Instant chess vs computer - just move pieces!",
-        image: "assets/games/chess.jpg",
-        url: "https://www.chess.com/play/computer", 
-        featured: true,
-        rating: 4.8
-    },
-    {
-        id: 2,
-        title: "2048",
-        category: "puzzle",
-        description: "Slide tiles with arrow keys - game starts immediately!",
-        image: "assets/games/2048.jpg",
-        url: "https://play2048.co/", 
-        featured: true,
-        rating: 4.5
-    },
-    {
-        id: 3,
-        title: "Tic Tac Toe",
-        category: "strategy", 
-        description: "Click squares to play vs AI - no setup needed!",
-        image: "assets/games/tictactoe.jpg",
-        url: "https://playtictactoe.org/", 
-        featured: true,
-        rating: 4.0
-    },
-    {
-        id: 4,
-        title: "Snake",
-        category: "arcade",
-        description: "Press space to start - arrow keys to move!",
-        image: "assets/games/snake.jpg",
-        url: "https://playsnake.org/", 
-        featured: false,
-        rating: 4.3
-    },
-    {
-        id: 5,
-        title: "Checkers",
-        category: "strategy",
-        description: "Click pieces to move - play against AI!",
-        image: "assets/games/checkers.jpg",
-        url: "https://cardgames.io/checkers/", 
-        featured: false,
-        rating: 4.2
-    },
-    {
-        id: 6,
-        title: "Solitaire",
-        category: "puzzle",
-        description: "Click and drag cards - game starts immediately!",
-        image: "assets/games/solitaire.jpg",
-        url: "https://cardgames.io/solitaire/", 
-        featured: false,
-        rating: 4.6
-    },
-    {
-        id: 7,
-        title: "Wordle",
-        category: "puzzle",
-        description: "Start typing to guess the word!",
-        image: "assets/games/wordle.jpg",
-        url: "https://www.nytimes.com/games/wordle/index.html", 
-        featured: false,
-        rating: 4.7
-    },
-    {
-        id: 8,
-        title: "Minesweeper",
-        category: "puzzle",
-        description: "Click squares to start finding mines!",
-        image: "assets/games/minesweeper.jpg",
-        url: "https://minesweeper.online/", 
-        featured: false,
-        rating: 4.1
-    },
-    {
-        id: 9,
-        title: "Tetris",
-        category: "arcade",
-        description: "Blocks fall immediately - use arrow keys!",
-        image: "assets/games/tetris.jpg",
-        url: "https://tetris.com/play-tetris", 
-        featured: false,
-        rating: 4.9
-    },
-    {
-        id: 10,
-        title: "Pac-Man",
-        category: "arcade",
-        description: "Press any key to start eating dots!",
-        image: "assets/games/pacman.jpg",
-        url: "https://www.google.com/logos/2010/pacman10-i.html", 
-        featured: true,
-        rating: 4.8
-    },
-    {
-        id: 11,
-        title: "Sudoku",
-        category: "puzzle",
-        description: "Click cells and type numbers - play immediately!",
-        image: "assets/games/sudoku.jpg",
-        url: "https://sudoku.com/", 
-        featured: false,
-        rating: 4.4
-    },
-    {
-        id: 12,
-        title: "Crossword",
-        category: "puzzle",
-        description: "Click clues and type answers - starts immediately!",
-        image: "assets/games/crossword.jpg",
-        url: "https://www.nytimes.com/crosswords/game/daily", 
-        featured: false,
-        rating: 4.3
-    }
-];
     // ===== DOM ELEMENTS =====
     const gamesGrid = document.getElementById('games-grid');
     const allGamesGrid = document.getElementById('all-games-grid');
@@ -266,12 +147,6 @@ document.addEventListener('click', (e) => {
         
         // Set up event listeners
         setupEventListeners();
-        
-        // Initialize Netlify auth
-        if (typeof NetlifyAuth !== 'undefined') {
-            NetlifyAuth.init();
-            updateAuthButton();
-        }
     }
 
     // ===== GAME LOADING FUNCTIONS =====
@@ -336,34 +211,44 @@ document.addEventListener('click', (e) => {
             });
         });
 
-        // Play button clicks (delegated)
+        // Play button clicks
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('play-btn')) {
                 const gameId = parseInt(e.target.dataset.gameId);
                 const game = games.find(g => g.id === gameId);
                 
                 if (game) {
-                    handlePlayGame(game);
+                    // Check if user is logged in
+                    if (!localStorage.getItem('user')) {
+                        // Not logged in - SHOW POPUP
+                        showLoginPopup(game);
+                    } else {
+                        // Logged in - play the game
+                        window.open(game.url, '_blank');
+                        
+                        // Record game play in history
+                        const user = JSON.parse(localStorage.getItem('user'));
+                        const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+                        gameHistory.unshift({
+                            gameId: game.id,
+                            gameTitle: game.title,
+                            playedAt: new Date().toISOString(),
+                            userId: user.id || user.email
+                        });
+                        localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 10)));
+                    }
                 }
             }
         });
 
-        // Popup buttons
+        // Popup buttons - FIXED
         popupLoginBtn.addEventListener('click', () => {
-            if (typeof NetlifyAuth !== 'undefined') {
-                NetlifyAuth.openLogin();
-            } else {
-                window.location.href = 'login.html';
-            }
+            window.location.href = 'login.html';
             hideLoginPopup();
         });
 
         popupSignupBtn.addEventListener('click', () => {
-            if (typeof NetlifyAuth !== 'undefined') {
-                NetlifyAuth.openSignup();
-            } else {
-                window.location.href = 'signup.html';
-            }
+            window.location.href = 'signup.html';
             hideLoginPopup();
         });
 
@@ -378,50 +263,6 @@ document.addEventListener('click', (e) => {
 
         // Theme toggle
         themeToggle.addEventListener('click', toggleTheme);
-
-        // Auth button
-        if (userAuthBtn) {
-            userAuthBtn.addEventListener('click', handleAuthClick);
-        }
-    }
-
-    // ===== GAME HANDLING =====
-    let currentGameToPlay = null;
-
-    function handlePlayGame(game) {
-        currentGameToPlay = game;
-        
-        // Check if user is logged in (using Netlify auth)
-        if (typeof NetlifyAuth !== 'undefined' && NetlifyAuth.isLoggedIn()) {
-            // User is logged in - play the game
-            playGame(game);
-        } else {
-            // User not logged in - show login popup
-            showLoginPopup(game);
-        }
-    }
-
-    function playGame(game) {
-        // Store that user played this game (for history)
-        if (typeof NetlifyAuth !== 'undefined' && NetlifyAuth.isLoggedIn()) {
-            const user = NetlifyAuth.getCurrentUser();
-            if (user) {
-                const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-                gameHistory.unshift({
-                    gameId: game.id,
-                    gameTitle: game.title,
-                    playedAt: new Date().toISOString(),
-                    userId: user.id
-                });
-                localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 20))); // Keep last 20
-            }
-        }
-        
-        // Open game in new tab
-        window.open(game.url, '_blank');
-        
-        // Or embed in iframe (alternative)
-        // window.location.href = `play.html?game=${encodeURIComponent(game.url)}&title=${encodeURIComponent(game.title)}`;
     }
 
     // ===== LOGIN POPUP =====
@@ -435,44 +276,6 @@ document.addEventListener('click', (e) => {
 
     function hideLoginPopup() {
         loginPopup.style.display = 'none';
-    }
-
-    // ===== AUTH FUNCTIONS =====
-    function updateAuthButton() {
-        if (userAuthBtn && typeof NetlifyAuth !== 'undefined') {
-            if (NetlifyAuth.isLoggedIn()) {
-                const user = NetlifyAuth.getCurrentUser();
-                const username = user.user_metadata?.full_name || user.email.split('@')[0];
-                userAuthBtn.textContent = `👤 ${username}`;
-                userAuthBtn.style.color = '#4CAF50';
-                
-                // Check if there's a pending game to play
-                const pendingGame = localStorage.getItem('pendingGame');
-                if (pendingGame) {
-                    const game = JSON.parse(pendingGame);
-                    playGame(game);
-                    localStorage.removeItem('pendingGame');
-                }
-            } else {
-                userAuthBtn.textContent = 'Log in';
-                userAuthBtn.style.color = '';
-            }
-        }
-    }
-
-    function handleAuthClick() {
-        if (typeof NetlifyAuth !== 'undefined') {
-            if (NetlifyAuth.isLoggedIn()) {
-                // Show logout confirmation
-                if (confirm('Do you want to logout?')) {
-                    NetlifyAuth.logout();
-                }
-            } else {
-                NetlifyAuth.openLogin();
-            }
-        } else {
-            window.location.href = 'login.html';
-        }
     }
 
     // ===== GAME FILTERING =====
@@ -504,12 +307,5 @@ document.addEventListener('click', (e) => {
             document.body.style.backgroundColor = '#0f0f0f';
             document.body.style.color = '#fff';
         }
-    }
-
-    // ===== NETLIFY AUTH CALLBACKS =====
-    if (typeof NetlifyAuth !== 'undefined') {
-        // Listen for auth state changes
-        window.netlifyIdentity?.on('login', updateAuthButton);
-        window.netlifyIdentity?.on('logout', updateAuthButton);
     }
 });
