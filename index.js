@@ -1,5 +1,27 @@
 // index.js - Main JavaScript with game data
 document.addEventListener('DOMContentLoaded', () => {
+     
+    setTimeout(() => {
+        if (typeof netlifyIdentity === 'undefined') {
+            console.warn('Netlify Identity not loaded. Using fallback auth.');
+            
+            // Update login button behavior
+            const authBtn = document.getElementById('user-auth');
+            if (authBtn) {
+                authBtn.onclick = () => {
+                    if (localStorage.getItem('userLoggedIn') === 'true') {
+                        if (confirm('Logout from demo account?')) {
+                            localStorage.removeItem('userLoggedIn');
+                            localStorage.removeItem('userData');
+                            location.reload();
+                        }
+                    } else {
+                        window.location.href = '/login-fallback.html';
+                    }
+                };
+            }
+        }
+    }, 2000);
     // ===== GAME DATABASE =====
 
    const games = [
