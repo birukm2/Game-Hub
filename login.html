@@ -3,12 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="assets/image/G.jpg">
+    <link rel="icon" type="image/x-icon" href="assets/images/G.jpg">
     <title>Login - GameHub</title>
     <link rel="stylesheet" href="login.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script src="/netlify-auth.js" defer></script>
-
+    
+    <!-- Netlify Identity loaded silently in background -->
+    <script>
+        // Load Netlify Identity but prevent it from showing its own UI
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+            script.onload = function() {
+                if (window.netlifyIdentity) {
+                    // Initialize silently - no auto-redirects
+                    window.netlifyIdentity.on("init", function(user) {
+                        console.log('Netlify Identity ready (background)');
+                    });
+                    
+                    window.netlifyIdentity.on("login", function(user) {
+                        console.log('User logged in via Netlify:', user.email);
+                        // Store the token for future API calls
+                        if (user.token && user.token.access_token) {
+                            localStorage.setItem('nf_token', user.token.access_token);
+                        }
+                        // Redirect to home
+                        window.location.href = 'index.html';
+                    });
+                    
+                    window.netlifyIdentity.init();
+                }
+            };
+            document.head.appendChild(script);
+        })();
+    </script>
 </head>
 <body>
     <!-- Optional: Add GameHub header like your main page -->
@@ -68,9 +95,7 @@
                 </div>
             </form>
 
-            <div class="demo-credentials">
-                <p>Demo: Use "player1" / "password123"</p>
-            </div>
+        
         </div>
     </div>
 

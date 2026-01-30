@@ -1,5 +1,107 @@
 // index.js - Main JavaScript with game data
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // Check login status and update UI
+    function checkAuthStatus() {
+        const user = localStorage.getItem('user');
+        const authBtn = document.getElementById('user-auth') || document.getElementById('log-in');
+        
+        if (!authBtn) return;
+        
+        if (user) {
+            try {
+                const userData = JSON.parse(user);
+                const username = userData.name || userData.username || 'User';
+                const source = userData.source === 'netlify' ? '🔐' : '🎮';
+                
+                authBtn.innerHTML = `${source} ${username}`;
+                authBtn.style.color = '#4CAF50';
+                authBtn.title = 'Click to logout';
+                
+                // Update click handler for logout
+                authBtn.onclick = function() {
+                    const confirmLogout = confirm(`Logout ${username}?`);
+                    if (confirmLogout) {
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('nf_token');
+                        window.location.reload();
+                    }
+                };
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+        } else {
+            authBtn.innerHTML = 'Log in';
+            authBtn.style.color = '';
+            authBtn.title = '';
+            
+            // Update click handler for login
+            authBtn.onclick = function() {
+                window.location.href = 'login.html';
+            };
+        }
+    }
+    
+    // Check auth on page load
+    checkAuthStatus();
+    
+    // Update play button behavior to check login
+    function createGameCard(game) {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        
+        card.innerHTML = `
+            <div class="game-image-wrapper">
+                <img src="${game.image}" alt="${game.title}" class="game-image">
+                <div class="game-overlay">
+                    <button class="play-btn" data-game-id="${game.id}">Play Now</button>
+                </div>
+            </div>
+            <div class="game-info">
+                <h3 class="game-title">${game.title}</h3>
+                <span class="game-category">${game.category.toUpperCase()}</span>
+                <p class="game-description">${game.description}</p>
+                <div class="game-rating">⭐ ${game.rating}/5</div>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    // Update play button click handler
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('play-btn')) {
+            const gameId = parseInt(e.target.dataset.gameId);
+            const game = games.find(g => g.id === gameId);
+            
+            if (game) {
+                // Check if user is logged in
+                if (!localStorage.getItem('user')) {
+                    // Not logged in - store game and redirect to login
+                    localStorage.setItem('pendingGame', JSON.stringify(game));
+                    
+                    const loginFirst = confirm('Please login to play games!\n\nOK = Go to login page\nCancel = Stay here');
+                    if (loginFirst) {
+                        window.location.href = 'login.html';
+                    }
+                } else {
+                    // Logged in - play the game
+                    window.open(game.url, '_blank');
+                    
+                    // Record game play in history
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+                    gameHistory.unshift({
+                        gameId: game.id,
+                        gameTitle: game.title,
+                        playedAt: new Date().toISOString(),
+                        userId: user.id || user.email
+                    });
+                    localStorage.setItem('gameHistory', JSON.stringify(gameHistory.slice(0, 10)));
+                }
+            }
+        }
+    });
      
     setTimeout(() => {
         if (typeof netlifyIdentity === 'undefined') {

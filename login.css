@@ -296,21 +296,7 @@ body {
     background: rgba(255, 71, 87, 0.1);
 }
 
-/* Demo Credentials */
-.demo-credentials {
-    margin-top: 30px;
-    padding: 15px;
-    background: rgba(255, 71, 87, 0.1);
-    border-radius: 8px;
-    border-left: 4px solid #ff4757;
-}
 
-.demo-credentials p {
-    margin: 0;
-    color: #ffa8b0;
-    font-size: 14px;
-    font-family: 'Courier New', monospace;
-}
 
 /* Responsive Design */
 @media (max-width: 480px) {

@@ -467,3 +467,52 @@ body {
         margin: 1rem;
     }
 }
+
+/* Auth status indicator */
+.auth-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+}
+
+.auth-status.netlify {
+    border-left: 3px solid #4CAF50;
+}
+
+.auth-status.local {
+    border-left: 3px solid #ff8a00;
+}
+
+/* Login prompt */
+.login-prompt {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 71, 87, 0.9);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.login-prompt.show {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
