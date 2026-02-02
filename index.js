@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     // ===== GAME DATABASE =====
     const games = [
@@ -195,12 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== EVENT LISTENERS =====
     function setupEventListeners() {
-        // Search functionality - ONLY ONE LISTENER NEEDED
+            // Search functionality
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 const activeCategory = document.querySelector('.filter-btn.active')?.dataset.category || 'all';
-                console.log('Search event fired:', searchTerm);
+                
+                // Always apply search when typing
                 filterGames(searchTerm, activeCategory);
             });
         }
@@ -213,11 +213,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     filterButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
                     
-                    // Filter games with current search term AND category
-                    const category = button.dataset.category || 'all';
+                    // Get current search term
                     const searchTerm = searchInput?.value.toLowerCase().trim() || '';
+                    const category = button.dataset.category || 'all';
+                    
+                    // Apply both filters
                     filterGames(searchTerm, category);
                 });
+            });
+        }
+
+        // Category filters
+        if (filterButtons.length > 0) {
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Get current search term
+                    const searchTerm = searchInput?.value.toLowerCase().trim() || '';
+                    const category = button.dataset.category || 'all';
+                    
+                    // Apply both filters
+                    filterGames(searchTerm, category);
+                });
+            });
+        }
+        
+        // Header navigation links
+        const headerFeatured = document.querySelector('.header-nav a[href="#featured"]');
+        const headerAllGames = document.querySelector('.header-nav a[href="#all-games"]');
+        
+        if (headerFeatured) {
+            headerFeatured.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Reset everything and scroll to featured
+                searchInput.value = '';
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.category === 'all') btn.classList.add('active');
+                });
+                filterGames('', 'all');
+                document.getElementById('featured').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+        
+        if (headerAllGames) {
+            headerAllGames.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Reset everything and scroll to all games
+                searchInput.value = '';
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.category === 'all') btn.classList.add('active');
+                });
+                filterGames('', 'all');
+                document.getElementById('all-games').scrollIntoView({ behavior: 'smooth' });
             });
         }
 
@@ -302,19 +354,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== GAME FILTERING =====
+      // ===== GAME FILTERING =====
     function filterGames(searchTerm = '', category = 'all') {
         console.log('🔍 Filtering:', { searchTerm, category });
         
-        // Toggle search mode
-        const isSearching = searchTerm || category !== 'all';
+        // Fix: Only treat typing in search box as "searching"
+        const isSearching = !!searchTerm; // NOT category !== 'all'
+        const isCategoryFiltering = category !== 'all';
+        
+        // Update search mode CSS (only hide hero when actually typing in search box)
         document.body.classList.toggle('searching', isSearching);
         
-        // Get ALL game cards from BOTH grids
-        const allCards = document.querySelectorAll('.game-card');
+        // Get game cards from BOTH grids
+        const featuredCards = document.querySelectorAll('#games-grid .game-card');
+        const allCards = document.querySelectorAll('#all-games-grid .game-card');
+        const allCardsArray = [...featuredCards, ...allCards];
         
-        allCards.forEach(card => {
-            // Get card data
+        allCardsArray.forEach(card => {
             const titleElement = card.querySelector('.game-title');
             const cardTitle = card.dataset.title || '';
             const cardCategory = card.dataset.category || '';
@@ -324,29 +380,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.dataset.originalTitle = titleElement.textContent;
             }
             
-            // Check if matches
+            // Reset title to original first
+            if (titleElement && card.dataset.originalTitle) {
+                titleElement.textContent = card.dataset.originalTitle;
+            }
+            
+            // SEARCH FILTERING
             const matchesSearch = !searchTerm || 
                 cardTitle.includes(searchTerm.toLowerCase());
             
+            // CATEGORY FILTERING
             const matchesCategory = category === 'all' || 
-                cardCategory === category.toLowerCase();
+                cardCategory.toLowerCase() === category.toLowerCase();
             
-            const shouldShow = matchesSearch && matchesCategory;
+            // DECISION: What should show?
+            let shouldShow = true;
             
-         
-            if (shouldShow) {
-                card.style.display = '';
-                
-               
-                if (searchTerm && titleElement && card.dataset.originalTitle) {
-                    const highlightedText = card.dataset.originalTitle.replace(
-                        new RegExp(searchTerm, 'gi'),
-                        match => `<span class="highlight">${match}</span>`
-                    );
-                    titleElement.innerHTML = highlightedText;
-                }
-            } else {
-                card.style.display = 'none'; 
+            if (searchTerm && category !== 'all') {
+                // Both search AND category selected
+                shouldShow = matchesSearch && matchesCategory;
+            } else if (searchTerm) {
+                // Only searching
+                shouldShow = matchesSearch;
+            } else if (category !== 'all') {
+                // Only category filtering
+                shouldShow = matchesCategory;
+            }
+            // else: show everything (default)
+            
+            // Show/hide card
+            card.style.display = shouldShow ? '' : 'none';
+            
+            // Highlight search term (only if actually searching)
+            if (searchTerm && shouldShow && titleElement && card.dataset.originalTitle) {
+                const highlightedText = card.dataset.originalTitle.replace(
+                    new RegExp(searchTerm, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                titleElement.innerHTML = highlightedText;
             }
         });
         

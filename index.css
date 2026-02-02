@@ -501,23 +501,23 @@ body {
     }
 }
 
-.searching #featured .section-title {
+/* hide hero */
+.searching .hero {
     display: none !important;
 }
 
-.searching #featured::before {
-    content: "Search Results";
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: white;
-    font-weight: bold;
-}
-
-.searching #featured {
+/* Everything else always visible */
+#featured,
+#all-games,
+.category-filters {
     display: block !important;
 }
 
-.searching #featured .section-title {
-    display: none !important;
+/* Highlight search terms */
+.highlight {
+    background: rgba(255, 71, 87, 0.3);
+    color: #ff4757;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
 }
