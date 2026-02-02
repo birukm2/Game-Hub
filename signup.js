@@ -1,23 +1,85 @@
-// signup.js - Simple working version
+
 document.addEventListener('DOMContentLoaded', function() {
+   
     const signupForm = document.getElementById('signupForm');
     const signupBtn = document.getElementById('signupBtn');
     const loginBtnAlt = document.getElementById('loginBtnAlt');
     
-    // If already logged in, redirect to home
+    
     if (localStorage.getItem('user')) {
         window.location.href = 'index.html';
         return;
     }
-    
-    // Login alternative button
+
     if (loginBtnAlt) {
         loginBtnAlt.addEventListener('click', function() {
             window.location.href = 'login.html';
         });
     }
-    
-    // Form submission
+
+ 
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.querySelector('.strength-bar');
+    const strengthText = document.querySelector('.strength-text');
+
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        
+        if (password.length < 1) {
+            strengthBar.style.width = '0%';
+            strengthText.textContent = 'Enter a password';
+        }
+        else if (password.length < 6) {
+            strengthBar.style.width = '25%';
+            strengthBar.style.background = '#ff4757'; 
+            strengthText.textContent = 'Password strength: weak';
+        }
+        else if (password.length < 8) {
+            strengthBar.style.width = '60%';
+            strengthBar.style.background = '#ffa502'; 
+            strengthText.textContent = 'Password strength: medium';
+        }
+        else {
+            strengthBar.style.width = '100%';
+            strengthBar.style.background = '#2ed573'; 
+            strengthText.textContent = 'Password strength: strong';
+        }
+    });
+
+    // TERMS POPUP \
+    const termsLink = document.querySelector('.terms-link');
+    const popup = document.getElementById('terms-popup');
+    const closeBtn = document.querySelector('.popup-close');
+
+    if (termsLink) {
+        termsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            popup.style.display = 'flex';
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            popup.style.display = 'none';
+        });
+    }
+
+    if (popup) {
+        popup.addEventListener('click', function(e) {
+            if (e.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+    }
+
+    // Close Escape 
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && popup.style.display === 'flex') {
+            popup.style.display = 'none';
+        }
+    });
+
+ 
     signupForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -27,8 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const terms = document.getElementById('terms').checked;
-        
-        // Validation
+        const newsletter = document.getElementById('newsletter').checked; 
         let errors = [];
         
         if (!fullName) errors.push('Full name is required');
@@ -41,17 +102,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (password !== confirmPassword) errors.push('Passwords do not match');
         if (!terms) errors.push('You must agree to the Terms of Service');
         
-        // Show errors if any
+
         if (errors.length > 0) {
             alert('Please fix the following:\n\n• ' + errors.join('\n• '));
             return;
         }
-        
-        // Disable button and show loading
+       
         signupBtn.disabled = true;
         signupBtn.innerHTML = '<span class="btn-text">Creating Account...</span>';
         
-        // Create user data
+
         const userData = {
             id: Date.now(),
             fullName: fullName,
@@ -63,10 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
             joined: new Date().toISOString()
         };
         
-        // Store in localStorage
+
         localStorage.setItem('user', JSON.stringify(userData));
-        
-        // Show success message
+     
         setTimeout(() => {
             signupBtn.innerHTML = '<span class="btn-text">Account Created!</span>';
             
@@ -77,6 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     });
     
-    // Auto-focus first field
+
     document.getElementById('fullName').focus();
 });

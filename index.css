@@ -1,4 +1,4 @@
-/* Reset & Base Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -297,6 +297,12 @@ body {
     line-height: 1.5;
 }
 
+.game-rating {
+    color: #ffd700;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
 /* Login Popup Styles */
 .login-popup-overlay {
     display: none;
@@ -426,6 +432,29 @@ body {
     color: white;
 }
 
+/* ===== SIMPLE SEARCH STYLES ===== */
+
+/* Hide hero and extra sections when searching */
+.searching .hero,
+.searching .games-section:not(:first-of-type) {
+    display: none;
+}
+
+/* Highlight for search terms */
+.highlight {
+    background: rgba(255, 71, 87, 0.3);
+    color: #ff4757;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* Make the search input stand out when searching */
+.searching .search-input {
+    background: rgba(255, 71, 87, 0.1);
+    border-color: rgba(255, 71, 87, 0.5);
+    box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header {
@@ -466,53 +495,29 @@ body {
         padding: 2rem 1rem;
         margin: 1rem;
     }
+    
+    .games-section {
+        padding: 1rem;
+    }
 }
 
-/* Auth status indicator */
-.auth-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    font-size: 14px;
+.searching #featured .section-title {
+    display: none !important;
 }
 
-.auth-status.netlify {
-    border-left: 3px solid #4CAF50;
-}
-
-.auth-status.local {
-    border-left: 3px solid #ff8a00;
-}
-
-/* Login prompt */
-.login-prompt {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(255, 71, 87, 0.9);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.login-prompt.show {
+.searching #featured::before {
+    content: "Search Results";
     display: block;
-    animation: slideIn 0.3s ease;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    font-weight: bold;
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+.searching #featured {
+    display: block !important;
+}
+
+.searching #featured .section-title {
+    display: none !important;
 }

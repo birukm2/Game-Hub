@@ -1,4 +1,4 @@
-// index.js - Main JavaScript with game data
+
 document.addEventListener('DOMContentLoaded', () => {
     // ===== GAME DATABASE =====
     const games = [
@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Set up event listeners
         setupEventListeners();
+        
+        // Show all games initially
+        filterGames('', 'all');
     }
 
     // ===== GAME LOADING FUNCTIONS =====
@@ -192,24 +195,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== EVENT LISTENERS =====
     function setupEventListeners() {
-        // Search functionality
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            filterGames(searchTerm);
-        });
+        // Search functionality - ONLY ONE LISTENER NEEDED
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const activeCategory = document.querySelector('.filter-btn.active')?.dataset.category || 'all';
+                console.log('Search event fired:', searchTerm);
+                filterGames(searchTerm, activeCategory);
+            });
+        }
 
         // Category filters
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Update active button
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Filter games
-                const category = button.dataset.category;
-                filterGames('', category);
+        if (filterButtons.length > 0) {
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Filter games with current search term AND category
+                    const category = button.dataset.category || 'all';
+                    const searchTerm = searchInput?.value.toLowerCase().trim() || '';
+                    filterGames(searchTerm, category);
+                });
             });
-        });
+        }
 
         // Play button clicks
         document.addEventListener('click', (e) => {
@@ -241,57 +251,105 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Popup buttons - FIXED
-        popupLoginBtn.addEventListener('click', () => {
-            window.location.href = 'login.html';
-            hideLoginPopup();
-        });
+        // Popup buttons
+        if (popupLoginBtn) {
+            popupLoginBtn.addEventListener('click', () => {
+                window.location.href = 'login.html';
+                hideLoginPopup();
+            });
+        }
 
-        popupSignupBtn.addEventListener('click', () => {
-            window.location.href = 'signup.html';
-            hideLoginPopup();
-        });
+        if (popupSignupBtn) {
+            popupSignupBtn.addEventListener('click', () => {
+                window.location.href = 'signup.html';
+                hideLoginPopup();
+            });
+        }
 
-        popupCancelBtn.addEventListener('click', hideLoginPopup);
+        if (popupCancelBtn) {
+            popupCancelBtn.addEventListener('click', hideLoginPopup);
+        }
 
         // Close popup when clicking outside
-        loginPopup.addEventListener('click', (e) => {
-            if (e.target === loginPopup) {
-                hideLoginPopup();
-            }
-        });
+        if (loginPopup) {
+            loginPopup.addEventListener('click', (e) => {
+                if (e.target === loginPopup) {
+                    hideLoginPopup();
+                }
+            });
+        }
 
         // Theme toggle
-        themeToggle.addEventListener('click', toggleTheme);
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
     }
 
     // ===== LOGIN POPUP =====
     function showLoginPopup(game) {
-        popupMessage.textContent = `Log in to play "${game.title}" and save your progress!`;
-        loginPopup.style.display = 'flex';
-        
-        // Store game info for after login
-        localStorage.setItem('pendingGame', JSON.stringify(game));
+        if (popupMessage && loginPopup) {
+            popupMessage.textContent = `Log in to play "${game.title}" and save your progress!`;
+            loginPopup.style.display = 'flex';
+            
+            // Store game info for after login
+            localStorage.setItem('pendingGame', JSON.stringify(game));
+        }
     }
 
     function hideLoginPopup() {
-        loginPopup.style.display = 'none';
+        if (loginPopup) {
+            loginPopup.style.display = 'none';
+        }
     }
 
     // ===== GAME FILTERING =====
     function filterGames(searchTerm = '', category = 'all') {
-        const cards = allGamesGrid.querySelectorAll('.game-card');
+        console.log('🔍 Filtering:', { searchTerm, category });
         
-        cards.forEach(card => {
+        // Toggle search mode
+        const isSearching = searchTerm || category !== 'all';
+        document.body.classList.toggle('searching', isSearching);
+        
+        // Get ALL game cards from BOTH grids
+        const allCards = document.querySelectorAll('.game-card');
+        
+        allCards.forEach(card => {
+            // Get card data
+            const titleElement = card.querySelector('.game-title');
+            const cardTitle = card.dataset.title || '';
+            const cardCategory = card.dataset.category || '';
+            
+            // Store original title
+            if (!card.dataset.originalTitle && titleElement) {
+                card.dataset.originalTitle = titleElement.textContent;
+            }
+            
+            // Check if matches
             const matchesSearch = !searchTerm || 
-                card.dataset.title.includes(searchTerm) ||
-                card.querySelector('.game-title').textContent.toLowerCase().includes(searchTerm);
+                cardTitle.includes(searchTerm.toLowerCase());
             
             const matchesCategory = category === 'all' || 
-                card.dataset.category === category;
+                cardCategory === category.toLowerCase();
             
-            card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+            const shouldShow = matchesSearch && matchesCategory;
+            
+         
+            if (shouldShow) {
+                card.style.display = '';
+                
+               
+                if (searchTerm && titleElement && card.dataset.originalTitle) {
+                    const highlightedText = card.dataset.originalTitle.replace(
+                        new RegExp(searchTerm, 'gi'),
+                        match => `<span class="highlight">${match}</span>`
+                    );
+                    titleElement.innerHTML = highlightedText;
+                }
+            } else {
+                card.style.display = 'none'; 
+            }
         });
+        
     }
 
     // ===== THEME TOGGLE =====

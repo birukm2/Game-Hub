@@ -40,5 +40,5 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAuthUI();
     
     // Listen for storage changes
-    window.addEventListener('storage', updateAuthUI);
+    window.addEventListener('storage', updateAuthUI);// (This updates the UI if user logs in/out in another tab)
 });

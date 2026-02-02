@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <!-- GameHub Header -->
+
     <div class="gamehub-header">
         <a href="index.html" class="back-home">
             <span class="logo-square">G</span>
@@ -50,7 +50,7 @@
                            placeholder="Create a strong password">
                     <div class="password-strength">
                         <div class="strength-bar"></div>
-                        <span class="strength-text">Password strength: weak</span>
+                        <span class="strength-text">Enter a password</span>
                     </div>
                 </div>
 
@@ -60,58 +60,46 @@
                            placeholder="Re-enter your password">
                     <div class="password-match"></div>
                 </div>
+                         <div class="terms-agreement">
+                      <input type="checkbox" id="terms" name="terms" required>
+                              <label for="terms">
+                        I agree to the <a href="#terms-popup" class="terms-link">Terms & Privacy Policy</a>
+                                    </label>
+                                 </div>
 
-                <div class="form-options">
-                    <div class="terms-agreement">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">
-                            I agree to the <a href="#" class="terms-link">Terms of Service</a> 
-                            and <a href="#" class="terms-link">Privacy Policy</a>
-                        </label>
-                    </div>
-                    
-                    <div class="newsletter-opt">
+                          <div class="newsletter-opt">
                         <input type="checkbox" id="newsletter" name="newsletter">
-                        <label for="newsletter">Send me gaming news and updates</label>
+                     <label for="newsletter">Send me gaming news and updates</label>
+                            </div>
+
+                             <!-- Terms Popup  -->
+                <div class="simple-popup" id="terms-popup">
+                 <div class="popup-content">
+                     <h3>GameHub Terms & Privacy</h3>
+                 <div class="popup-text">
+                    <p>By using GameHub, you agree that we can collect your gameplay data (scores, achievements, playtime) to improve our services and personalize your gaming experience.</p>
+                     <p>We don't sell your personal information. Your data helps us recommend games you'll love and keep our platform secure.</p>
+                </div>
+                      <button class="popup-close">Got it!</button>
+                </div>
+                   </div>
+                        <div class="form-submit">
+                          <button type="submit" class="signup-btn" id="signupBtn">
+                             <span class="btn-text">Create Account</span>
+                              <span class="btn-icon">🎮</span>
+                          </button>
+                     </div>
+
+
+                     <div class="divider">
+                       <span>Already have an account?</span>
                     </div>
-                </div>
-
-                <button type="submit" class="signup-btn" id="signupBtn">
-                    <span class="btn-text">Create Account</span>
-                    <span class="btn-icon">🎮</span>
-                </button>
-
-                <div class="divider">
-                    <span>Already have an account?</span>
-                </div>
 
                 <div class="login-section">
-                    <button type="button" class="login-btn-alt" id="loginBtnAlt">
-                        Sign In Instead
-                    </button>
+                <button type="button" class="login-btn-alt" id="loginBtnAlt">
+                           Sign In Instead
+                          </button>
                 </div>
-
-                <div class="social-signup">
-                    <p class="social-title">Or sign up with</p>
-                    <div class="social-buttons">
-                        <button type="button" class="social-btn google-btn">
-                            <span class="social-icon">G</span>
-                            <span>Google</span>
-                        </button>
-                        <button type="button" class="social-btn discord-btn">
-                            <span class="social-icon">D</span>
-                            <span>Discord</span>
-                        </button>
-                        <button type="button" class="social-btn steam-btn">
-                            <span class="social-icon">S</span>
-                            <span>Steam</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="signup.js"></script>
-</body>
-</html>
+              <script src="signup.js"></script>
+              </body>
+              </html>
