@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ===== GAME DATABASE =====
+    // GAME DATABASE 
     const games = [
         {
             id: 1,
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userAuthBtn = document.getElementById('user-auth');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // ===== INITIALIZE =====
+    // INITIALIZE 
     initializePage();
     
     function initializePage() {
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterGames('', 'all');
     }
 
-    // ===== GAME LOADING FUNCTIONS =====
+    // GAME LOADING FUNCTIONS 
     function loadFeaturedGames() {
         const featuredGames = games.filter(game => game.featured);
         gamesGrid.innerHTML = '';
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return card;
     }
 
-    // ===== EVENT LISTENERS =====
+    // EVENT LISTENERS 
     function setupEventListeners() {
             // Search functionality
         if (searchInput) {
@@ -354,18 +354,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-      // ===== GAME FILTERING =====
+      //  GAME FILTERING 
     function filterGames(searchTerm = '', category = 'all') {
-        console.log('🔍 Filtering:', { searchTerm, category });
         
-        // Fix: Only treat typing in search box as "searching"
-        const isSearching = !!searchTerm; // NOT category !== 'all'
+        "
+        const isSearching = !!searchTerm; // NOT category !== 'al
         const isCategoryFiltering = category !== 'all';
         
-        // Update search mode CSS (only hide hero when actually typing in search box)
+       
         document.body.classList.toggle('searching', isSearching);
         
-        // Get game cards from BOTH grids
+        
         const featuredCards = document.querySelectorAll('#games-grid .game-card');
         const allCards = document.querySelectorAll('#all-games-grid .game-card');
         const allCardsArray = [...featuredCards, ...allCards];
@@ -374,44 +373,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const titleElement = card.querySelector('.game-title');
             const cardTitle = card.dataset.title || '';
             const cardCategory = card.dataset.category || '';
-            
-            // Store original title
+          
             if (!card.dataset.originalTitle && titleElement) {
                 card.dataset.originalTitle = titleElement.textContent;
             }
             
-            // Reset title to original first
+          
             if (titleElement && card.dataset.originalTitle) {
                 titleElement.textContent = card.dataset.originalTitle;
             }
             
-            // SEARCH FILTERING
+
             const matchesSearch = !searchTerm || 
                 cardTitle.includes(searchTerm.toLowerCase());
             
-            // CATEGORY FILTERING
+         
             const matchesCategory = category === 'all' || 
                 cardCategory.toLowerCase() === category.toLowerCase();
             
-            // DECISION: What should show?
             let shouldShow = true;
             
             if (searchTerm && category !== 'all') {
-                // Both search AND category selected
                 shouldShow = matchesSearch && matchesCategory;
             } else if (searchTerm) {
-                // Only searching
                 shouldShow = matchesSearch;
             } else if (category !== 'all') {
-                // Only category filtering
                 shouldShow = matchesCategory;
             }
-            // else: show everything (default)
-            
-            // Show/hide card
             card.style.display = shouldShow ? '' : 'none';
             
-            // Highlight search term (only if actually searching)
             if (searchTerm && shouldShow && titleElement && card.dataset.originalTitle) {
                 const highlightedText = card.dataset.originalTitle.replace(
                     new RegExp(searchTerm, 'gi'),
@@ -423,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
 
-    // ===== THEME TOGGLE =====
+    // THEME TOGGLE 
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
         
