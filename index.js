@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== LOGIN POPUP =====
+    // LOGIN POPUP 
     function showLoginPopup(game) {
         if (popupMessage && loginPopup) {
             popupMessage.textContent = `Log in to play "${game.title}" and save your progress!`;
@@ -356,8 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       //  GAME FILTERING 
     function filterGames(searchTerm = '', category = 'all') {
+        console.log('🔍 Filtering:', { searchTerm, category });
         
-        "
+        
         const isSearching = !!searchTerm; // NOT category !== 'al
         const isCategoryFiltering = category !== 'all';
         
